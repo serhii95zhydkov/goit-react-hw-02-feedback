@@ -7,44 +7,54 @@ class App extends Component {
     bad: 0,
   };
 
-  handleIncrement = event => {
-    console.log('Оціни мене');
-
-    const { target } = event;
-    console.log(event.target);
-    console.log(target);
-    this.setState((prevState) => {
-      console.log(prevState);
-      return {
-        good: prevState.good + 1,
-        neutral: prevState.neutral + 1,
-        bad: prevState.bad + 1,
-      }
-    })
+  leaveFeedback = value => {
+    this.setState(prevState => {
+      return { [value]: prevState[value] + 1 };
+    });
   };
 
+  countTotalFeedback() {
+    const { good, neutral, bad } = this.state;
+    const total = good + neutral + bad;
+    return total;
+  }
+
+  countPositiveFeedbackPercentage(propName) {
+    const total = this.countTotalFeedback();
+    if (!total) {
+      return 0;
+    }
+    const value = this.state[propName];
+    const result = ((value / total) * 100).toFixed(2);
+    return Number(result);
+  }
+
   render() {
+    const total = this.countTotalFeedback();
+    const goodPercentage = this.countPositiveFeedbackPercentage('good');
+    const { good, neutral, bad } = this.state;
+
     return (
       <div>
         <section>
           <h1>Please leave feedback</h1>
-          <button type="button" onClick={this.handleIncrement}>
+          <button type="button" onClick={() => this.leaveFeedback('good')}>
             Good
           </button>
-          <button type="button" onClick={this.handleIncrement}>
+          <button type="button" onClick={() => this.leaveFeedback('neutral')}>
             Neutral
           </button>
-          <button type="button" onClick={this.handleIncrement}>
+          <button type="button" onClick={() => this.leaveFeedback('bad')}>
             Bad
           </button>
         </section>
         <section>
-            <h2>Statistics</h2>
-            <p>Good: {this.state.good}</p>
-            <p>Neutral: {this.state.neutral}</p>
-            <p>Bad: {this.state.bad}</p>
-            <p>Total:</p>
-            <p>Positive feedback:</p>
+          <h2>Statistics</h2>
+          <p>Good: {good}</p>
+          <p>Neutral: {neutral}</p>
+          <p>Bad: {bad}</p>
+          <p>Total: {total}</p>
+          <p>Positive feedback: {goodPercentage}%</p>
         </section>
       </div>
     );
