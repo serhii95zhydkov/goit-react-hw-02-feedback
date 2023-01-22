@@ -1,4 +1,7 @@
 import { Component } from 'react';
+import Statistics from './Statistics/Statistics';
+import FeedbackOptions from './FeedbackOptions/FeedbackOptions';
+import Section from './Section/Section';
 
 class App extends Component {
   state = {
@@ -19,43 +22,39 @@ class App extends Component {
     return total;
   }
 
-  countPositiveFeedbackPercentage(propName) {
+  countPositiveFeedbackPercentage() {
     const total = this.countTotalFeedback();
     if (!total) {
       return 0;
     }
-    const value = this.state[propName];
-    const result = ((value / total) * 100).toFixed(2);
+    const { good } = this.state;
+    const result = ((good / total) * 100).toFixed(2);
     return Number(result);
   }
 
   render() {
     const total = this.countTotalFeedback();
-    const goodPercentage = this.countPositiveFeedbackPercentage('good');
+    const goodPercentage = this.countPositiveFeedbackPercentage();
     const { good, neutral, bad } = this.state;
+    const options = Object.keys(this.state);
 
     return (
       <div>
-        <section>
-          <h1>Please leave feedback</h1>
-          <button type="button" onClick={() => this.leaveFeedback('good')}>
-            Good
-          </button>
-          <button type="button" onClick={() => this.leaveFeedback('neutral')}>
-            Neutral
-          </button>
-          <button type="button" onClick={() => this.leaveFeedback('bad')}>
-            Bad
-          </button>
-        </section>
-        <section>
-          <h2>Statistics</h2>
-          <p>Good: {good}</p>
-          <p>Neutral: {neutral}</p>
-          <p>Bad: {bad}</p>
-          <p>Total: {total}</p>
-          <p>Positive feedback: {goodPercentage}%</p>
-        </section>
+        <Section title="Please leave feedback">
+          <FeedbackOptions
+            options={options}
+            onLeaveFeedback={this.leaveFeedback}
+          ></FeedbackOptions>
+        </Section>
+        <Section title="Statistics">
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={total}
+            positivePercentage={goodPercentage}
+          ></Statistics>
+        </Section>
       </div>
     );
   }
