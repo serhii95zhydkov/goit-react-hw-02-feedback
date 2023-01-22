@@ -5,5 +5,6 @@ export const StyledSectionContainer = styled.div`
 `;
 
 export const StyledSectionTitle = styled.h2`
+  margin-bottom: 10px;
   color: blue;
 `;
